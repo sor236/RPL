@@ -390,7 +390,7 @@ const matchTimes = {
 };
 
 // ===================================================================
-// ДАННЫЕ МАТЧЕЙ (1-9 ТУРЫ С РЕЗУЛЬТАТАМИ, 10-30 БЕЗ РЕЗУЛЬТАТОВ)
+// ДАННЫЕ МАТЧЕЙ (1-10 ТУРЫ С РЕЗУЛЬТАТАМИ, 11-30 БЕЗ РЕЗУЛЬТАТОВ)
 // ===================================================================
 const matchData = [
     // 1-й тур (24-27 июля)
@@ -484,12 +484,12 @@ const matchData = [
     { id:72, tour:9, date:"17.09.2026", home:"Динамо Мх", away:"ЦСКА", homeScore:1, awayScore:3 },
 
     // 10-й тур (9-11 октября)
-    { id:73, tour:10, date:"09.10.2026", home:"Ростов", away:"Акрон", homeScore:null, awayScore:null },
-    { id:74, tour:10, date:"10.10.2026", home:"Оренбург", away:"Динамо Мх", homeScore:null, awayScore:null },
-    { id:75, tour:10, date:"10.10.2026", home:"Факел", away:"Локомотив", homeScore:null, awayScore:null },
-    { id:76, tour:10, date:"10.10.2026", home:"Крылья Советов", away:"Спартак", homeScore:null, awayScore:null },
-    { id:77, tour:10, date:"10.10.2026", home:"Краснодар", away:"Зенит", homeScore:null, awayScore:null },
-    { id:78, tour:10, date:"11.10.2026", home:"Ахмат", away:"Балтика", homeScore:null, awayScore:null },
+    { id:73, tour:10, date:"09.10.2026", home:"Ростов", away:"Акрон", homeScore:1, awayScore:0 },
+    { id:74, tour:10, date:"10.10.2026", home:"Оренбург", away:"Динамо Мх", homeScore:4, awayScore:0 },
+    { id:75, tour:10, date:"10.10.2026", home:"Факел", away:"Локомотив", homeScore:0, awayScore:5 },
+    { id:76, tour:10, date:"10.10.2026", home:"Крылья Советов", away:"Спартак", homeScore:1, awayScore:1 },
+    { id:77, tour:10, date:"10.10.2026", home:"Краснодар", away:"Зенит", homeScore:2, awayScore:3 },
+    { id:78, tour:10, date:"11.10.2026", home:"Ахмат", away:"Балтика", homeScore:0, awayScore:0 },
     { id:79, tour:10, date:"11.10.2026", home:"ЦСКА", away:"Родина", homeScore:null, awayScore:null },
     { id:80, tour:10, date:"11.10.2026", home:"Рубин", away:"Динамо", homeScore:null, awayScore:null },
 
@@ -701,10 +701,13 @@ let scores = {};
 function loadScores() {
     const saved = localStorage.getItem("rpl2026_scores");
     let parsed = saved ? JSON.parse(saved) : {};
+    // Матчи, которые ещё не сыграны — принудительно обнуляем,
+    // даже если в localStorage остались старые счета
+    const notPlayedIds = [79, 80];
     matchData.forEach(m => {
         if (m.homeScore !== null && m.awayScore !== null) {
             scores[m.id] = { home: m.homeScore, away: m.awayScore };
-        } else if (parsed[m.id] !== undefined) {
+        } else if (!notPlayedIds.includes(m.id) && parsed[m.id] !== undefined) {
             scores[m.id] = parsed[m.id];
         } else {
             scores[m.id] = null;
